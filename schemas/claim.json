@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reward-layer-protocol.github.io/rlp/schemas/claim.json",
+  "title": "RLP Claim",
+  "description": "Request and response schemas for task claims",
+  "definitions": {
+    "ClaimRequest": {
+      "type": "object",
+      "required": ["output", "agentId"],
+      "properties": {
+        "output": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The agent's completed work"
+        },
+        "agentId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Agent authentication credential"
+        }
+      }
+    },
+    "ClaimResponse": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["success", "failed", "error"],
+          "description": "Result of the claim"
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation"
+        },
+        "reward": {
+          "type": "object",
+          "description": "Reward granted (present on success)",
+          "properties": {
+            "amount": {
+              "type": "string",
+              "pattern": "^[0-9]+(\\.[0-9]+)?$"
+            },
+            "unit": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

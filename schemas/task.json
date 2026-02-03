@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reward-layer-protocol.github.io/rlp/schemas/task.json",
+  "title": "RLP Task",
+  "description": "A unit of work that an agent can complete for a reward",
+  "type": "object",
+  "required": ["id", "description", "reward", "claimUrl"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for the task"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000,
+      "description": "What the agent should do to complete this task"
+    },
+    "targetUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional URL providing context for the task"
+    },
+    "reward": {
+      "type": "object",
+      "required": ["amount", "unit"],
+      "description": "The reward offered for completing the task",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Reward amount as a decimal string"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Currency or token identifier (implementation-defined)"
+        }
+      }
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp after which the task is no longer valid"
+    },
+    "claimUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "HTTPS URL where agents POST their completed work"
+    }
+  }
+}

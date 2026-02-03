@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reward-layer-protocol.github.io/rlp/schemas/manifest.json",
+  "title": "RLP Manifest",
+  "description": "Task manifest served at /.well-known/agent-reward.json",
+  "type": "object",
+  "required": ["version", "issuer", "tasks"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Protocol version (e.g., '1.1')"
+    },
+    "issuer": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL identifying the manifest issuer"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "Available tasks",
+      "items": {
+        "$ref": "task.json"
+      }
+    },
+    "claimInstructions": {
+      "type": "object",
+      "description": "Instructions for submitting claims",
+      "properties": {
+        "method": {
+          "type": "string",
+          "const": "POST"
+        },
+        "contentType": {
+          "type": "string",
+          "const": "application/json"
+        },
+        "bodySchema": {
+          "type": "object",
+          "properties": {
+            "output": {
+              "type": "string",
+              "description": "Description of the output field"
+            },
+            "agentId": {
+              "type": "string",
+              "description": "Description of the agentId field"
+            }
+          }
+        }
+      }
+    }
+  }
+}
