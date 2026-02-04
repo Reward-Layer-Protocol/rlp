@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2026-02-04
+
+### Added
+
+- **`verificationProcess` field** — Required field in Task schema for verification criteria
+- **Section 10.7** — Verification Process Confidentiality security requirement
+
+### Changed
+
+- Task schema now requires `verificationProcess` for all tasks
+- Servers MUST NOT expose `verificationProcess` to agents (normative requirement)
+
+### Security
+
+- `verificationProcess` MUST be filtered from GetManifest and GetTask responses
+- Prevents agents from gaming verification by knowing the criteria
+
+---
+
 ## [1.1.0] - 2026-02-04
 
 ### Added

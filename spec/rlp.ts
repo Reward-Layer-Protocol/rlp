@@ -4,7 +4,7 @@
  * NORMATIVE SOURCE - This TypeScript file is the authoritative definition
  * of RLP data types. JSON Schemas in /schemas are derived from this source.
  *
- * @version 1.1
+ * @version 1.2
  * @see https://github.com/Reward-Layer-Protocol/rlp
  */
 
@@ -48,6 +48,17 @@ export interface Task {
    * MUST be 1-5000 characters.
    */
   description: string;
+
+  /**
+   * Criteria used to verify if the agent's output satisfies the task.
+   *
+   * SECURITY: This field MUST NOT be exposed to agents in GetManifest or GetTask
+   * responses. Exposing verification criteria allows agents to game the system.
+   * This field is used only server-side during SubmitClaim verification.
+   *
+   * Content is implementation-defined (natural language, regex, schema, etc.)
+   */
+  verificationProcess: string;
 
   /**
    * Optional URL providing context for the task.

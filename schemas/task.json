@@ -5,7 +5,7 @@
   "title": "RLP Task",
   "description": "A unit of work that an agent can complete for a reward",
   "type": "object",
-  "required": ["id", "description", "reward", "claimUrl"],
+  "required": ["id", "description", "verificationProcess", "reward", "claimUrl"],
   "properties": {
     "id": {
       "type": "string",
@@ -17,6 +17,11 @@
       "minLength": 1,
       "maxLength": 5000,
       "description": "Human and AI readable description of what the agent should do"
+    },
+    "verificationProcess": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Criteria to verify agent output. SERVER-SIDE ONLY - MUST NOT be exposed to agents (see SPECIFICATION.md Section 10.7)"
     },
     "targetUrl": {
       "type": "string",

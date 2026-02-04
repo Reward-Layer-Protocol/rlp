@@ -1,6 +1,6 @@
 # RLP Specification
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Draft
 **Last Updated:** 2026-02-04
 
@@ -21,7 +21,7 @@ The Reward Layer Protocol (RLP) is an open standard that enables AI agents to di
 - Extensible: Support for protocol extensions without breaking compatibility
 
 **Non-Goals:**
-- RLP does NOT define how verification is performed
+- RLP does NOT define how verification is performed (only that criteria must exist)
 - RLP does NOT mandate specific payment or settlement mechanisms
 - RLP does NOT define agent capabilities beyond task completion
 
@@ -146,12 +146,13 @@ A Task represents a unit of work that an agent can complete for a reward.
 
 ```typescript
 interface Task {
-  id: string;              // REQUIRED - Unique identifier (UUID recommended)
-  description: string;     // REQUIRED - What the agent should do
-  targetUrl?: string;      // OPTIONAL - Reference URL for context
-  reward: Reward;          // REQUIRED - Reward for completion
-  expiresAt?: string;      // OPTIONAL - ISO 8601 expiration timestamp
-  claimUrl: string;        // REQUIRED - Where to submit completed work
+  id: string;                    // REQUIRED - Unique identifier (UUID recommended)
+  description: string;           // REQUIRED - What the agent should do
+  verificationProcess: string;   // REQUIRED - How to verify (SERVER-SIDE ONLY)
+  targetUrl?: string;            // OPTIONAL - Reference URL for context
+  reward: Reward;                // REQUIRED - Reward for completion
+  expiresAt?: string;            // OPTIONAL - ISO 8601 expiration timestamp
+  claimUrl: string;              // REQUIRED - Where to submit completed work
 }
 
 interface Reward {
@@ -170,6 +171,13 @@ Human and AI readable description of what the agent should do.
 - MUST be 1-5000 characters
 - SHOULD be clear and unambiguous
 - MAY reference `targetUrl` for additional context
+
+**`verificationProcess`** (required)
+Criteria used to verify if the agent's output satisfies the task.
+- MUST be defined for every task
+- Servers MUST NOT expose this field in GetManifest or GetTask responses (see Section 10.7)
+- Used only server-side during SubmitClaim verification
+- Content is implementation-defined (may be natural language, regex, schema, etc.)
 
 **`targetUrl`** (optional)
 A URL providing context for the task. Agents MAY visit this URL to gather information needed to complete the task.
@@ -648,6 +656,18 @@ Implementations SHOULD implement rate limiting:
 - Per IP: Limit requests for DDoS protection
 
 Rate limited requests SHOULD return HTTP 429 with error code 1004.
+
+### 10.7 Verification Process Confidentiality
+
+The `verificationProcess` field MUST NOT be exposed to agents.
+
+**Rationale:** Exposing verification criteria allows agents to game the system by crafting outputs that pass verification without actually completing the task. For example, if an agent knows the verification checks for "contains at least 100 words", it can generate meaningless text that meets the criteria.
+
+**Requirements:**
+- Servers MUST filter the `verificationProcess` field from GetManifest responses
+- Servers MUST filter the `verificationProcess` field from GetTask responses
+- The field MUST only be used server-side during SubmitClaim verification
+- Implementations SHOULD NOT log or expose verification criteria in error messages
 
 ---
 
