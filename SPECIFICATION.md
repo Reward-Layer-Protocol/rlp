@@ -105,33 +105,28 @@ An Agent is a client that:
 ### 3.3 Flow Diagram
 
 ```
-┌────────┐          ┌──────────────┐          ┌────────────┐
-│ Agent  │          │ Reward Layer │          │ Target URL │
-└───┬────┘          └──────┬───────┘          └─────┬──────┘
-    │                      │                        │
-    │  1. GetManifest      │                        │
-    │─────────────────────>│                        │
-    │                      │                        │
-    │  2. Manifest         │                        │
-    │<─────────────────────│                        │
-    │                      │                        │
-    │  3. Visit targetUrl (optional)                │
-    │──────────────────────────────────────────────>│
-    │                      │                        │
-    │  4. Content          │                        │
-    │<──────────────────────────────────────────────│
-    │                      │                        │
-    │  5. Complete task    │                        │
-    │  (local processing)  │                        │
-    │                      │                        │
-    │  6. SubmitClaim      │                        │
-    │─────────────────────>│                        │
-    │                      │                        │
-    │  7. Verify output    │                        │
-    │                      │                        │
-    │  8. ClaimResponse    │                        │
-    │<─────────────────────│                        │
-    │                      │                        │
+┌────────┐                    ┌──────────────┐
+│ Agent  │                    │ Reward Layer │
+└───┬────┘                    └──────┬───────┘
+    │                                │
+    │  1. GetManifest                │
+    │───────────────────────────────>│
+    │                                │
+    │  2. Manifest (tasks)           │
+    │<───────────────────────────────│
+    │                                │
+    │  3. Complete task              │
+    │  (local processing)            │
+    │                                │
+    │  4. SubmitClaim                │
+    │───────────────────────────────>│
+    │                                │
+    │  5. Verify output              │
+    │  (server-side)                 │
+    │                                │
+    │  6. ClaimResponse              │
+    │<───────────────────────────────│
+    │                                │
 ```
 
 ---
@@ -146,13 +141,21 @@ A Task represents a unit of work that an agent can complete for a reward.
 
 ```typescript
 interface Task {
-  id: string;                    // REQUIRED - Unique identifier (UUID recommended)
-  description: string;           // REQUIRED - What the agent should do
-  verificationProcess: string;   // REQUIRED - How to verify (SERVER-SIDE ONLY)
-  targetUrl?: string;            // OPTIONAL - Reference URL for context
-  reward: Reward;                // REQUIRED - Reward for completion
-  expiresAt?: string;            // OPTIONAL - ISO 8601 expiration timestamp
-  claimUrl: string;              // REQUIRED - Where to submit completed work
+  id: string;                           // REQUIRED - Unique identifier (UUID recommended)
+  description: string;                  // REQUIRED - What the agent should do
+  verificationProcess: VerificationProcess;  // REQUIRED - How to verify (SERVER-SIDE ONLY)
+  reward: Reward;                       // REQUIRED - Reward for completion
+  expiresAt?: string;                   // OPTIONAL - ISO 8601 expiration timestamp
+  claimUrl: string;                     // REQUIRED - Where to submit completed work
+}
+
+interface VerificationProcess {
+  env?: Record<string, unknown>;  // OPTIONAL - Environment/context for verification
+  function: string;               // REQUIRED - Verification logic or criteria
+}
+
+interface VerificationResult {
+  isPass: boolean;    // TRUE = claim succeeds, FALSE = claim fails
 }
 
 interface Reward {
@@ -170,17 +173,21 @@ Unique identifier for the task. UUID v4 is RECOMMENDED but not required.
 Human and AI readable description of what the agent should do.
 - MUST be 1-5000 characters
 - SHOULD be clear and unambiguous
-- MAY reference `targetUrl` for additional context
+- MAY include context URLs, expected outcomes, or other guidance
 
 **`verificationProcess`** (required)
-Criteria used to verify if the agent's output satisfies the task.
+Configuration for verifying agent output.
 - MUST be defined for every task
 - Servers MUST NOT expose this field in GetManifest or GetTask responses (see Section 10.7)
 - Used only server-side during SubmitClaim verification
-- Content is implementation-defined (may be natural language, regex, schema, etc.)
+- Contains:
+  - `env`: Optional environment/context for verification (implementation-defined)
+  - `function`: Verification logic or criteria (implementation-defined: natural language, code, schema, etc.)
 
-**`targetUrl`** (optional)
-A URL providing context for the task. Agents MAY visit this URL to gather information needed to complete the task.
+**`verificationResult`** (server-side only)
+When verification runs, it produces a `VerificationResult`:
+- `isPass: true` → claim status is `"success"`
+- `isPass: false` → claim status is `"failed"`
 
 **`reward`** (required)
 The reward offered for completing the task.
@@ -353,8 +360,7 @@ Accept: application/json
   "tasks": [
     {
       "id": "550e8400-e29b-41d4-a716-446655440000",
-      "description": "Summarize this API documentation",
-      "targetUrl": "https://docs.example.com/api-reference",
+      "description": "Summarize the API documentation at https://docs.example.com/api-reference",
       "reward": { "amount": "1.00", "unit": "USD" },
       "claimUrl": "https://api.example.com/claim/550e8400-e29b-41d4-a716-446655440000"
     }
@@ -374,8 +380,7 @@ Accept: application/json
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
-  "description": "Summarize this API documentation",
-  "targetUrl": "https://docs.example.com/api-reference",
+  "description": "Summarize the API documentation at https://docs.example.com/api-reference",
   "reward": { "amount": "1.00", "unit": "USD" },
   "claimUrl": "https://api.example.com/claim/550e8400-e29b-41d4-a716-446655440000"
 }
@@ -500,8 +505,7 @@ The link relation `agent-reward` indicates an RLP manifest. This relation is not
   "tasks": [
     {
       "id": "550e8400-e29b-41d4-a716-446655440000",
-      "description": "Summarize the key features and usage patterns of this API documentation in 2-3 paragraphs.",
-      "targetUrl": "https://docs.example.com/api-reference",
+      "description": "Summarize the key features and usage patterns of the API documentation at https://docs.example.com/api-reference in 2-3 paragraphs.",
       "reward": {
         "amount": "1.00",
         "unit": "USD"
@@ -529,18 +533,22 @@ The link relation `agent-reward` indicates an RLP manifest. This relation is not
 
 When an agent submits a claim:
 
-1. The server evaluates whether the `output` satisfies the task `description`
-2. The server returns `success`, `failed`, `pending`, or `error`
+1. The server retrieves the task's `verificationProcess` (which was hidden from the agent)
+2. The server executes verification using `verificationProcess.function` (and optionally `verificationProcess.env`)
+3. Verification produces a `VerificationResult` with `isPass: true` or `isPass: false`
+4. The server maps the result to a ClaimResponse:
+   - `isPass: true` → `status: "success"`
+   - `isPass: false` → `status: "failed"`
 
 ### 8.2 Implementation Freedom
 
-The standard does NOT specify how verification is performed. Implementations MAY use:
+The standard does NOT specify how verification is performed. The `verificationProcess.function` field is implementation-defined and MAY contain:
 
-- AI/LLM evaluation
-- Human review
-- Automated rules
-- Cryptographic proofs
-- Any combination
+- Natural language criteria
+- AI/LLM evaluation prompts
+- Executable code
+- Schema validation rules
+- References to external verification services
 
 This flexibility allows different implementations to optimize for their specific use cases.
 
@@ -776,8 +784,8 @@ See [`schemas/claim.json`](./schemas/claim.json)
 1. Agent visits https://docs.example.com
 2. Agent finds: <link rel="agent-reward" href="...">
 3. Agent fetches manifest from href
-4. Agent reads task: "Summarize this documentation"
-5. Agent visits targetUrl, produces summary
+4. Agent reads task description (includes URL to summarize)
+5. Agent produces summary based on description
 6. Agent POSTs to claimUrl:
    {
      "output": "This documentation covers...",

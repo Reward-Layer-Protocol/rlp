@@ -32,6 +32,37 @@ export interface Reward {
 }
 
 /**
+ * Verification process configuration.
+ * Used server-side to verify agent output. MUST NOT be exposed to agents.
+ */
+export interface VerificationProcess {
+  /**
+   * Optional environment/context for verification.
+   * Implementation-defined structure for passing context to verification logic.
+   */
+  env?: Record<string, unknown>;
+
+  /**
+   * Verification logic or criteria.
+   * Content is implementation-defined (natural language, code, schema, etc.)
+   */
+  function: string;
+}
+
+/**
+ * Result of running verification on agent output.
+ * Produced server-side when processing SubmitClaim.
+ */
+export interface VerificationResult {
+  /**
+   * Whether the agent's output passed verification.
+   * TRUE = output satisfies task requirements → claim succeeds
+   * FALSE = output does not satisfy requirements → claim fails
+   */
+  isPass: boolean;
+}
+
+/**
  * A unit of work that an agent can complete for a reward.
  */
 export interface Task {
@@ -45,27 +76,22 @@ export interface Task {
   /**
    * Human and AI readable description of what the agent should do.
    * This is the primary field agents use to understand and complete the task.
+   * MAY include context URLs, expected outcomes, or other guidance.
    * MUST be 1-5000 characters.
    */
   description: string;
 
   /**
-   * Criteria used to verify if the agent's output satisfies the task.
+   * Configuration for verifying agent output.
    *
    * SECURITY: This field MUST NOT be exposed to agents in GetManifest or GetTask
    * responses. Exposing verification criteria allows agents to game the system.
    * This field is used only server-side during SubmitClaim verification.
    *
-   * Content is implementation-defined (natural language, regex, schema, etc.)
+   * @see VerificationProcess
+   * @see VerificationResult
    */
-  verificationProcess: string;
-
-  /**
-   * Optional URL providing context for the task.
-   * Agents MAY visit this URL to gather information needed to complete the task.
-   * @example "https://docs.example.com/api-reference"
-   */
-  targetUrl?: string;
+  verificationProcess: VerificationProcess;
 
   /**
    * The reward offered for completing the task.

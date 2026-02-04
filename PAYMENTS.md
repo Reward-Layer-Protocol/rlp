@@ -100,7 +100,7 @@ While x402 cannot handle RLP reward settlement, it can complement RLP in other w
 
 | Use Case | Direction | x402 Applicable? |
 |----------|-----------|------------------|
-| Agent pays to access `targetUrl` content | Agent → Publisher | ✅ Yes |
+| Agent pays to access paid content | Agent → Publisher | ✅ Yes |
 | Agent pays claim submission fee (anti-spam) | Agent → Server | ✅ Yes |
 | **Server pays agent for completed work** | **Server → Agent** | **❌ No** |
 

@@ -16,17 +16,23 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 5000,
-      "description": "Human and AI readable description of what the agent should do"
+      "description": "Human and AI readable description of what the agent should do. MAY include context URLs and expected outcomes."
     },
     "verificationProcess": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Criteria to verify agent output. SERVER-SIDE ONLY - MUST NOT be exposed to agents (see SPECIFICATION.md Section 10.7)"
-    },
-    "targetUrl": {
-      "type": "string",
-      "format": "uri",
-      "description": "Optional URL providing context for the task"
+      "type": "object",
+      "required": ["function"],
+      "description": "Configuration for verifying agent output. SERVER-SIDE ONLY - MUST NOT be exposed to agents (see SPECIFICATION.md Section 10.7)",
+      "properties": {
+        "env": {
+          "type": "object",
+          "description": "Optional environment/context for verification. Implementation-defined structure."
+        },
+        "function": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Verification logic or criteria. Content is implementation-defined (natural language, code, schema, etc.)"
+        }
+      }
     },
     "reward": {
       "type": "object",

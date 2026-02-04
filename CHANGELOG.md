@@ -11,13 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **`verificationProcess` field** — Required field in Task schema for verification criteria
+- **`VerificationProcess` interface** — Structured verification configuration with `env` and `function` fields
+- **`VerificationResult` interface** — Standardized verification output with `isPass: boolean`
 - **Section 10.7** — Verification Process Confidentiality security requirement
 
 ### Changed
 
-- Task schema now requires `verificationProcess` for all tasks
+- `verificationProcess` changed from `string` to structured object `{ env?, function }`
+- Verification produces standardized `VerificationResult` with `isPass: true/false`
+- `description` field now MAY include context URLs (previously separate `targetUrl` field)
 - Servers MUST NOT expose `verificationProcess` to agents (normative requirement)
+
+### Removed
+
+- **`targetUrl` field** — Removed from Task schema (URLs can be included in `description`)
 
 ### Security
 

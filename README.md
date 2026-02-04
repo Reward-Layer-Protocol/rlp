@@ -41,8 +41,7 @@ A unit of work an agent can complete for a reward.
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
-  "description": "Summarize the key features of this documentation",
-  "targetUrl": "https://docs.example.com/api-reference",
+  "description": "Summarize the key features of the documentation at https://docs.example.com/api-reference",
   "reward": {
     "amount": "1.00",
     "unit": "USD"
