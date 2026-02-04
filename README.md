@@ -80,6 +80,14 @@ Content-Type: application/json
 
 See [SPECIFICATION.md](./SPECIFICATION.md) for the complete protocol specification.
 
+## Payments & Settlement
+
+RLP intentionally leaves settlement implementation-defined. See [PAYMENTS.md](./PAYMENTS.md) for:
+- Why RLP uses a work-first, pay-later model
+- Analysis of existing payment protocols (x402, AP2)
+- Settlement options for implementations
+- Open questions for community input
+
 ## Agent Identity
 
 RLP agents SHOULD have an [A2A-compliant agent card](https://a2a-protocol.org/latest/specification/) at `/.well-known/agent-card.json`. RLP does not define its own identity format.
