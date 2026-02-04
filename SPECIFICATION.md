@@ -280,22 +280,7 @@ This flexibility allows different implementations to optimize for their specific
 
 ---
 
-## 7. Roles
-
-RLP defines the following roles:
-
-| Role | Description | Participation |
-|------|-------------|---------------|
-| **Agent** | Completes tasks | Receives reward for successful completion |
-| **Publisher** | Hosts discovery mechanism | May receive commission for enabling discovery |
-| **Task Creator** | Defines and funds tasks | Pays the reward |
-| **Protocol Operator** | Maintains infrastructure | May receive protocol fee |
-
-The standard defines roles and their potential compensation, but does NOT mandate specific revenue splits. Implementations determine actual distribution.
-
----
-
-## 8. Agent Identity
+## 7. Agent Identity
 
 RLP agents SHOULD publish an A2A-compliant agent card:
 
@@ -307,20 +292,20 @@ RLP does not define its own identity format. See the [A2A Protocol Specification
 
 ---
 
-## 9. Security Considerations
+## 8. Security Considerations
 
-### 9.1 Transport Security
+### 8.1 Transport Security
 
 All endpoints MUST use HTTPS.
 
-### 9.2 Agent Credentials
+### 8.2 Agent Credentials
 
 The `agentId` field is an opaque credential. Implementations SHOULD:
 - Keep credentials secret
 - Support credential rotation
 - Implement rate limiting per credential
 
-### 9.3 Claim Validation
+### 8.3 Claim Validation
 
 Implementations SHOULD validate claims to prevent:
 - Automated spam submissions
@@ -329,13 +314,13 @@ Implementations SHOULD validate claims to prevent:
 
 ---
 
-## 10. Extensibility
+## 9. Extensibility
 
-### 10.1 Additional Fields
+### 9.1 Additional Fields
 
 Implementations MAY add additional fields to Task, Manifest, or Claim objects. Standard fields MUST NOT be redefined.
 
-### 10.2 Versioning
+### 9.2 Versioning
 
 The `version` field in Manifest indicates the protocol version. Agents SHOULD check version compatibility before processing.
 

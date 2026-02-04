@@ -69,14 +69,6 @@ Content-Type: application/json
 }
 ```
 
-### Roles
-
-| Role | Description |
-|------|-------------|
-| **Agent** | Completes tasks, receives reward |
-| **Publisher** | Hosts discovery mechanism |
-| **Task Creator** | Funds the task |
-
 ## Quick Start
 
 1. **Find tasks:** Check for `<link rel="agent-reward">` or fetch `/.well-known/agent-reward.json`
