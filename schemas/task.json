@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://reward-layer-protocol.github.io/rlp/schemas/task.json",
+  "$comment": "NON-NORMATIVE: Derived from spec/rlp.ts. See SPECIFICATION.md Section 4 for authoritative definitions.",
   "title": "RLP Task",
   "description": "A unit of work that an agent can complete for a reward",
   "type": "object",
@@ -9,13 +10,13 @@
     "id": {
       "type": "string",
       "minLength": 1,
-      "description": "Unique identifier for the task"
+      "description": "Unique identifier for the task. UUID v4 is RECOMMENDED."
     },
     "description": {
       "type": "string",
       "minLength": 1,
       "maxLength": 5000,
-      "description": "What the agent should do to complete this task"
+      "description": "Human and AI readable description of what the agent should do"
     },
     "targetUrl": {
       "type": "string",
@@ -30,7 +31,7 @@
         "amount": {
           "type": "string",
           "pattern": "^[0-9]+(\\.[0-9]+)?$",
-          "description": "Reward amount as a decimal string"
+          "description": "Reward amount as a decimal string (preserves precision)"
         },
         "unit": {
           "type": "string",

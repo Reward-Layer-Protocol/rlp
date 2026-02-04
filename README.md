@@ -21,6 +21,17 @@ RLP (extends A2A)
 └── Reward distribution (who gets paid)
 ```
 
+## Protocol Overview
+
+RLP defines four operations between Agents and Reward Layers:
+
+| Operation | Description | HTTP Binding |
+|-----------|-------------|--------------|
+| **GetManifest** | Discover available tasks | `GET /.well-known/agent-reward.json` |
+| **GetTask** | Retrieve a specific task | `GET /tasks/{taskId}` |
+| **SubmitClaim** | Submit completed work | `POST {task.claimUrl}` |
+| **GetClaimStatus** | Check pending claim status | `GET /claims/{claimId}` |
+
 ## Core Concepts
 
 ### Task
@@ -76,9 +87,35 @@ Content-Type: application/json
 3. **Do the work:** Complete the task as described
 4. **Claim reward:** POST your output to the task's `claimUrl`
 
+## Repository Structure
+
+```
+rlp/
+├── spec/
+│   └── rlp.ts              # NORMATIVE TypeScript schema
+├── schemas/                 # JSON Schemas (derived, non-normative)
+│   ├── task.json
+│   ├── manifest.json
+│   └── claim.json
+├── SPECIFICATION.md         # Full protocol specification
+├── PAYMENTS.md              # Payment design rationale
+├── CONTRIBUTING.md
+├── README.md
+└── LICENSE
+```
+
 ## Specification
 
-See [SPECIFICATION.md](./SPECIFICATION.md) for the complete protocol specification.
+See [SPECIFICATION.md](./SPECIFICATION.md) for the complete protocol specification, including:
+
+- Protocol Operations (Section 5)
+- HTTP/REST Binding (Section 6)
+- Error Codes (Section 9)
+- Security Considerations (Section 10)
+
+## Normative Schema
+
+The authoritative type definitions are in [`spec/rlp.ts`](./spec/rlp.ts). JSON Schemas in `/schemas` are derived from this source and are non-normative.
 
 ## Payments & Settlement
 

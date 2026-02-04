@@ -1,12 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://reward-layer-protocol.github.io/rlp/schemas/claim.json",
+  "$comment": "NON-NORMATIVE: Derived from spec/rlp.ts. See SPECIFICATION.md Section 4 for authoritative definitions.",
   "title": "RLP Claim",
   "description": "Request and response schemas for task claims",
-  "definitions": {
+  "$defs": {
     "ClaimRequest": {
       "type": "object",
       "required": ["output", "agentId"],
+      "description": "Request body for submitting a claim",
       "properties": {
         "output": {
           "type": "string",
@@ -23,11 +25,12 @@
     "ClaimResponse": {
       "type": "object",
       "required": ["status"],
+      "description": "Response from a claim submission",
       "properties": {
         "status": {
           "type": "string",
-          "enum": ["success", "failed", "error"],
-          "description": "Result of the claim"
+          "enum": ["success", "failed", "pending", "error"],
+          "description": "Result of the claim: success, failed, pending, or error"
         },
         "message": {
           "type": "string",
@@ -45,6 +48,30 @@
               "type": "string"
             }
           }
+        },
+        "claimId": {
+          "type": "string",
+          "description": "Unique identifier for this claim (present when status is pending)"
+        }
+      }
+    },
+    "RlpError": {
+      "type": "object",
+      "required": ["code", "message"],
+      "description": "Structured error response",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "RLP-specific error code (see Section 9 of SPECIFICATION.md)"
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable error message"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Optional additional details about the error"
         }
       }
     }
