@@ -1,0 +1,10 @@
+# RLP Specification — Code Owners
+# All changes require maintainer review.
+
+*                       @stainlu
+
+# Core specification (extra visibility)
+SPECIFICATION.md        @stainlu
+PAYMENTS.md             @stainlu
+spec/                   @stainlu
+schemas/                @stainlu

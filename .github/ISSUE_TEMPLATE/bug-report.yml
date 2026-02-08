@@ -1,0 +1,50 @@
+name: Bug Report
+description: Report an error or inconsistency in the RLP specification
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the Reward Layer Protocol specification.
+  - type: dropdown
+    id: spec-section
+    attributes:
+      label: Specification Section
+      description: Which part of the spec is affected?
+      options:
+        - SPECIFICATION.md (Core Protocol)
+        - spec/rlp.ts (TypeScript Schema)
+        - schemas/ (JSON Schemas)
+        - PAYMENTS.md (Payment Flows)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What is the issue?
+      description: Describe the error, inconsistency, or ambiguity you found.
+      placeholder: "Example: Section 3.2 says X, but the JSON schema requires Y..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should the spec say instead?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any implementation experience, links, or screenshots that help explain the issue.
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

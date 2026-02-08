@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Private review doc (maintainer's eyes only)
+OPEN_SOURCE_REVIEW.md

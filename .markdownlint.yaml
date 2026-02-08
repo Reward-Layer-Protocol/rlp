@@ -1,0 +1,18 @@
+# Markdown lint configuration for RLP spec
+# Relaxed rules that work with protocol specification style
+
+# Allow long lines (spec text is often dense)
+MD013: false
+
+# Allow HTML in markdown (used for examples)
+MD033: false
+
+# Allow duplicate headings (common in specs with repeated section patterns)
+MD024:
+  siblings_only: true
+
+# Allow trailing punctuation in headings
+MD026: false
+
+# Allow inline HTML
+MD036: false

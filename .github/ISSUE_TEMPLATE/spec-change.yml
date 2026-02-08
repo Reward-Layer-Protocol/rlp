@@ -1,0 +1,52 @@
+name: Spec Change Proposal
+description: Propose a change to the RLP specification (RFC-style)
+title: "[RFC]: "
+labels: ["proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This template is for proposing specification changes. For smaller fixes, use Bug Report instead.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One-paragraph summary of the proposed change.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this change needed? What use cases does it enable?
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Detailed design
+      description: |
+        How would this work? Include:
+        - API/schema changes
+        - New or modified fields
+        - Interaction with existing spec sections
+        - Migration path for existing implementations
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other designs were considered and why were they rejected?
+  - type: textarea
+    id: breaking
+    attributes:
+      label: Breaking changes
+      description: Does this break backwards compatibility? If so, what's the migration path?
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
