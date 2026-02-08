@@ -7,18 +7,13 @@
   "$defs": {
     "ClaimRequest": {
       "type": "object",
-      "required": ["output", "agentId"],
-      "description": "Request body for submitting a claim",
+      "required": ["output"],
+      "description": "Request body for submitting a claim. Authentication is via Authorization: Bearer header, not in the body.",
       "properties": {
         "output": {
           "type": "string",
           "minLength": 1,
           "description": "The agent's completed work"
-        },
-        "agentId": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Agent authentication credential"
         }
       }
     },

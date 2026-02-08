@@ -1,8 +1,8 @@
 # RLP Specification
 
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Draft
-**Last Updated:** 2026-02-04
+**Last Updated:** 2026-02-08
 
 ---
 
@@ -215,21 +215,24 @@ interface Manifest {
 interface ClaimInstructions {
   method: "POST";
   contentType: "application/json";
+  authentication: {
+    type: "bearer";
+    headerName: "Authorization";
+    description: string;   // How to authenticate (e.g. "Bearer {agentKey}")
+  };
   bodySchema: {
     output: string;        // Description of output field
-    agentId: string;       // Description of agentId field
   };
 }
 ```
 
 ### 4.3 ClaimRequest
 
-Request body for submitting a claim.
+Request body for submitting a claim. Authentication is via the `Authorization: Bearer {agentKey}` header, not in the request body.
 
 ```typescript
 interface ClaimRequest {
   output: string;          // REQUIRED - The agent's completed work
-  agentId: string;         // REQUIRED - Agent authentication credential
 }
 ```
 
@@ -298,7 +301,7 @@ Retrieves a single task by ID.
 
 Submits completed work for a task.
 
-**Input:** `ClaimRequest` (output, agentId)
+**Input:** `ClaimRequest` (output) + `Authorization: Bearer {agentKey}` header
 
 **Output:** `ClaimResponse`
 
@@ -399,11 +402,11 @@ Accept: application/json
 ```http
 POST /claim/550e8400-e29b-41d4-a716-446655440000 HTTP/1.1
 Host: api.example.com
+Authorization: Bearer {agentKey}
 Content-Type: application/json
 
 {
-  "output": "This documentation covers the REST API endpoints for...",
-  "agentId": "agent-xyz-credential"
+  "output": "This documentation covers the REST API endpoints for..."
 }
 ```
 
@@ -517,9 +520,13 @@ The link relation `agent-reward` indicates an RLP manifest. This relation is not
   "claimInstructions": {
     "method": "POST",
     "contentType": "application/json",
+    "authentication": {
+      "type": "bearer",
+      "headerName": "Authorization",
+      "description": "Bearer {agentKey}"
+    },
     "bodySchema": {
-      "output": "The agent's completed work",
-      "agentId": "Agent authentication credential"
+      "output": "The agent's completed work"
     }
   }
 }
@@ -632,7 +639,7 @@ RLP systems face the following threats:
 
 ### 10.3 Authentication
 
-The `agentId` field is an opaque credential. Implementations SHOULD:
+Agents authenticate via the `Authorization: Bearer {agentKey}` HTTP header. The `agentKey` is an opaque credential. Implementations SHOULD:
 
 - Keep credentials secret
 - Support credential rotation
@@ -786,10 +793,9 @@ See [`schemas/claim.json`](./schemas/claim.json)
 3. Agent fetches manifest from href
 4. Agent reads task description (includes URL to summarize)
 5. Agent produces summary based on description
-6. Agent POSTs to claimUrl:
+6. Agent POSTs to claimUrl with Authorization: Bearer {agentKey} header:
    {
-     "output": "This documentation covers...",
-     "agentId": "agent-xyz-credential"
+     "output": "This documentation covers..."
    }
 7. Server verifies output satisfies description
 8. Server responds: { "status": "success", "reward": { "amount": "1.00", "unit": "USD" } }
@@ -813,5 +819,6 @@ See [`schemas/claim.json`](./schemas/claim.json)
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-08 | Auth moved from body agentId to Authorization: Bearer header, credential renamed to agentKey |
 | 1.1 | 2026-02-04 | Added Protocol Operations, HTTP Binding, Error Codes, Security section |
 | 1.0 | 2026-02-03 | Initial public specification |

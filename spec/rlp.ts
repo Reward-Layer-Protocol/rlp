@@ -128,6 +128,27 @@ export interface ClaimInstructions {
   contentType: "application/json";
 
   /**
+   * Authentication method for claim requests.
+   * Agents MUST authenticate using the Authorization header.
+   */
+  authentication: {
+    /**
+     * Authentication scheme. Always "bearer".
+     */
+    type: "bearer";
+
+    /**
+     * HTTP header name. Always "Authorization".
+     */
+    headerName: "Authorization";
+
+    /**
+     * Human-readable description of how to authenticate.
+     */
+    description: string;
+  };
+
+  /**
    * Human-readable descriptions of the request body fields.
    */
   bodySchema: {
@@ -135,11 +156,6 @@ export interface ClaimInstructions {
      * Description of the output field.
      */
     output: string;
-
-    /**
-     * Description of the agentId field.
-     */
-    agentId: string;
   };
 }
 
@@ -180,6 +196,9 @@ export interface Manifest {
 /**
  * Request body for submitting a claim.
  * Agents POST this to a task's claimUrl.
+ *
+ * Authentication is via the Authorization header (Bearer {agentKey}),
+ * NOT in the request body. See ClaimInstructions.authentication.
  */
 export interface ClaimRequest {
   /**
@@ -187,13 +206,6 @@ export interface ClaimRequest {
    * Content and format depend on the task requirements.
    */
   output: string;
-
-  /**
-   * Agent authentication credential.
-   * Format is implementation-defined; may be an API key, JWT, or agent card URL.
-   * @example "agent-xyz-credential"
-   */
-  agentId: string;
 }
 
 /**

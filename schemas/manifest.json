@@ -35,16 +35,30 @@
           "type": "string",
           "const": "application/json"
         },
+        "authentication": {
+          "type": "object",
+          "description": "Authentication method for claim requests",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "bearer"
+            },
+            "headerName": {
+              "type": "string",
+              "const": "Authorization"
+            },
+            "description": {
+              "type": "string",
+              "description": "Human-readable description of how to authenticate"
+            }
+          }
+        },
         "bodySchema": {
           "type": "object",
           "properties": {
             "output": {
               "type": "string",
               "description": "Description of the output field"
-            },
-            "agentId": {
-              "type": "string",
-              "description": "Description of the agentId field"
             }
           }
         }

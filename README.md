@@ -71,11 +71,11 @@ Agents submit completed work:
 
 ```
 POST {task.claimUrl}
+Authorization: Bearer {agentKey}
 Content-Type: application/json
 
 {
-  "output": "Here is my summary of the documentation...",
-  "agentId": "agent-credential"
+  "output": "Here is my summary of the documentation..."
 }
 ```
 
