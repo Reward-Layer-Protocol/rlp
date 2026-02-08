@@ -16,3 +16,27 @@ MD026: false
 
 # Allow inline HTML
 MD036: false
+
+# Allow code blocks without blank lines around them (common in spec list items)
+MD031: false
+
+# Allow lists without blank lines around them
+MD032: false
+
+# Allow fenced code blocks without language specified
+MD040: false
+
+# Allow compact table style (no spaces around pipes)
+MD060: false
+
+# Allow files to start with non-h1 heading (PR template starts with ##)
+MD041: false
+
+# Allow multiple top-level headings
+MD025: false
+
+# Allow bare URLs
+MD034: false
+
+# Allow headings without blank lines below (checklist style)
+MD022: false
